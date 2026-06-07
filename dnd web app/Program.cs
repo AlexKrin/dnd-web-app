@@ -8,8 +8,7 @@ namespace dnd_web_app
         static void Main(string[] args)
         {
             Creature creature = new ConsoleUI().CreateCharacter();
-            
-
+            ConsoleUI.DisplayCharacter(creature);
         }
     }
     class ConsoleUI
@@ -96,9 +95,49 @@ namespace dnd_web_app
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
         }
 
+        public static void DisplayCharacter(Creature creature)
+        {
+            Console.WriteLine($"Имя: {creature.Name}");
+            Console.WriteLine($"Класс: {creature.Class}");
+            Console.WriteLine($"Раса: {creature.Race}");
+            Console.WriteLine($"Уровень: {creature.Level}");
+            Console.WriteLine($"Класс брони: {creature.ArmorClass}");
+            Console.WriteLine($"Здоровье: {creature.Health}");
+            if (creature.StrongSavingThrow)
+                Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {creature.GetModifier(creature.Strong) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {creature.GetModifier(creature.Strong)})");
 
+            if (creature.DexteritySavingThrow)
+                Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {creature.GetModifier(creature.Dexterity) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {creature.GetModifier(creature.Dexterity)})");
+
+            if (creature.PhysiqueSavingThrow)
+                Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {creature.GetModifier(creature.Physique) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {creature.GetModifier(creature.Physique)})");
+
+            if (creature.IntelligenceSavingThrow)
+                Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {creature.GetModifier(creature.Intelligence) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {creature.GetModifier(creature.Intelligence)})");
+
+            if (creature.WisdomSavingThrow)
+                Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {creature.GetModifier(creature.Wisdom) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {creature.GetModifier(creature.Wisdom)})");
+
+            if (creature.CharismaSavingThrow)
+                Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {creature.GetModifier(creature.Charisma) + creature.OwnershipBonus()})");
+            else
+                Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {creature.GetModifier(creature.Charisma)})");
+
+            
+        }
 
     }
+
     class Creature
     {
         public string Name { get; private set; }
