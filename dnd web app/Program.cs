@@ -9,6 +9,9 @@ namespace dnd_web_app
         {
             Creature creature = new ConsoleUI().CreateCharacter();
             ConsoleUI.DisplayCharacter(creature);
+            creature.TakeDamage(10);
+            ConsoleUI.DisplayCharacter(creature);
+
         }
     }
     class ConsoleUI
@@ -103,15 +106,15 @@ namespace dnd_web_app
             Console.WriteLine($"Уровень: {creature.Level}");
             Console.WriteLine($"Класс брони: {creature.ArmorClass}");
             Console.WriteLine($"Здоровье: {creature.Health}");
-            Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {creature.GetModifier(creature.Strong) + ProficiencyBonus(creature, creature.StrongSavingThrow)})");
-            Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {creature.GetModifier(creature.Dexterity) + ProficiencyBonus(creature, creature.DexteritySavingThrow)})");
-            Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {creature.GetModifier(creature.Physique) + ProficiencyBonus(creature, creature.PhysiqueSavingThrow)})");
-            Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {creature.GetModifier(creature.Intelligence) + ProficiencyBonus(creature, creature.IntelligenceSavingThrow)})");
-            Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {creature.GetModifier(creature.Wisdom) + ProficiencyBonus(creature, creature.WisdomSavingThrow)})");
-            Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {creature.GetModifier(creature.Charisma) + ProficiencyBonus(creature, creature.CharismaSavingThrow)})");
+            Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
+            Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
+            Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
+            Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
+            Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
+            Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
         }
 
-        public static int ProficiencyBonus(Creature creature, bool savingThrows)
+        private static int ProficiencyBonus(Creature creature, bool savingThrows)
         {
             if (savingThrows)
             {
@@ -123,6 +126,21 @@ namespace dnd_web_app
             }
         }
 
+        private static string UIBonus(Creature creature, bool savingThrows, int abilityScore)
+        {
+            if(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
+            {
+                return "+" + (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+            }
+            else if(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) == 0)
+            {
+                return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+            }
+            else
+            {
+                return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+            }
+        }
     }
 
     class Creature
@@ -198,6 +216,20 @@ namespace dnd_web_app
             double OwnershipBonus = Math.Ceiling((Level - 1) / 4.0);
             int RoundedOwnershipBonus = (int)OwnershipBonus;
             return RoundedOwnershipBonus + 2;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            if (Health - damage >= 0)
+            {
+                Health -= damage;
+            }
+            else
+            { 
+                Health = 0;
+            }
+
+
         }
     }
 
