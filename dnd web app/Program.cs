@@ -16,6 +16,28 @@ namespace dnd_web_app
     }
     class ConsoleUI
     {
+        public void MainMenu()
+        {
+            Console.WriteLine("1 - Сюжет");
+            Console.WriteLine("2 - Добавить персонажа");
+            Console.WriteLine("3 - ");
+            Console.WriteLine("4 - Выход");
+
+            int userInput = int.Parse(Console.ReadLine());
+            switch (userInput)
+            {
+                case 1:
+                    break;
+                case 2:
+                    CreateCharacter();
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+        }
+
         public Creature CreateCharacter()
         {
             Console.Write("Ведите имя персонажа: ");
@@ -114,18 +136,6 @@ namespace dnd_web_app
             Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
         }
 
-        private static int ProficiencyBonus(Creature creature, bool savingThrows)
-        {
-            if (savingThrows)
-            {
-                return creature.GetProficiencyBonus();
-            }
-            else
-            {
-                return 0;
-            }
-        }
-
         private static string UIBonus(Creature creature, bool savingThrows, int abilityScore)
         {
             if(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
@@ -139,6 +149,18 @@ namespace dnd_web_app
             else
             {
                 return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+            }
+
+            static int ProficiencyBonus(Creature creature, bool savingThrows)
+            {
+                if (savingThrows)
+                {
+                    return creature.GetProficiencyBonus();
+                }
+                else
+                {
+                    return 0;
+                }
             }
         }
     }
