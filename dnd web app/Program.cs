@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
 using System.Xml.Linq;
+using System.Text.Json;
 
 namespace dnd_web_app
 {
@@ -11,7 +12,9 @@ namespace dnd_web_app
             ConsoleUI.DisplayCharacter(creature);
             creature.TakeDamage(10);
             ConsoleUI.DisplayCharacter(creature);
-
+            SaveManeger.SaveCharacter(creature, "character.json");
+            Creature loadedCreature = SaveManeger.LoadCharacter("character.json");
+            ConsoleUI.DisplayCharacter(loadedCreature);
         }
     }
     class ConsoleUI
@@ -167,7 +170,7 @@ namespace dnd_web_app
 
     class Creature
     {
-        public string Name { get; private set; }
+        public string Name { get; set; }
         public string Class { get; private set; }
         public string Race { get; private set; }
         public int Level { get; private set; }
@@ -276,6 +279,34 @@ namespace dnd_web_app
         public bool Intimidation { get; private set; }
         public bool Deception { get; private set; }
         public bool Belief { get; private set; }
+    }
+
+    class SaveManeger
+    {
+        public static void SaveCharacter(Creature creature, string filePath)
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(creature);
+            File.WriteAllText(filePath, json);
+        }
+
+        public static Creature LoadCharacter(string filePath)
+        {
+            if (File.Exists(filePath))
+            {
+                string json = File.ReadAllText(filePath);
+                Creature creature = JsonSerializer.Deserialize<Creature>(json);
+                return creature;
+            }
+            else
+            {
+                Console.WriteLine("Файл не найден.");
+                return null;
+            }
+        }
     }
 }
 
