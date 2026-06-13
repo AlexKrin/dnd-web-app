@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Xml.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace dnd_web_app
 {
@@ -8,11 +9,11 @@ namespace dnd_web_app
     {
         static void Main(string[] args)
         {
-            Creature creature = new ConsoleUI().CreateCharacter();
-            ConsoleUI.DisplayCharacter(creature);
-            creature.TakeDamage(10);
-            ConsoleUI.DisplayCharacter(creature);
-            SaveManeger.SaveCharacter(creature, "character.json");
+            //Creature creature = new ConsoleUI().CreateCharacter();
+            //ConsoleUI.DisplayCharacter(creature);
+            //creature.TakeDamage(10);
+            //ConsoleUI.DisplayCharacter(creature);
+            //SaveManeger.SaveCharacter(creature, "character.json");
             Creature loadedCreature = SaveManeger.LoadCharacter("character.json");
             ConsoleUI.DisplayCharacter(loadedCreature);
         }
@@ -47,7 +48,7 @@ namespace dnd_web_app
             string name = Console.ReadLine();
 
             Console.Write("Ведите класс персонажа: ");
-            string characterClass = Console.ReadLine();
+            string @class = Console.ReadLine();
 
             Console.Write("Ведите расу персонажа: ");
             string race = Console.ReadLine();
@@ -119,7 +120,7 @@ namespace dnd_web_app
                 }
             }
 
-            return new Creature(name, characterClass, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
+            return new Creature(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
         }
 
@@ -197,15 +198,14 @@ namespace dnd_web_app
         public int Charisma { get; private set; }
         public bool CharismaSavingThrow { get; private set; }
 
-
-        public Creature(string name, string characterClass, string race, int level, int armorClass, int health,
+        [JsonConstructor]
+        public Creature(string name, string @class, string race, int level, int armorClass, int health,
                 int strong, int dexterity, int physique, int intelligence, int wisdom, int charisma,
                 bool strongSavingThrow = false, bool dexteritySavingThrow = false, bool physiqueSavingThrow = false, bool intelligenceSavingThrow = false, bool wisdomSavingThrow = false, bool charismaSavingThrow = false)
 
         {
-
             Name = name;
-            Class = characterClass;
+            Class = @class;
             Race = race;
             Level = level;
             ArmorClass = armorClass;
@@ -226,9 +226,9 @@ namespace dnd_web_app
 
         }
 
-        public Creature()
-        {
-        }
+        //public Creature()
+        //{
+        //}
 
         public int GetModifier(int abilityScore)
         {
