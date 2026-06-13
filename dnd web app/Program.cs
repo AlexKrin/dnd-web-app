@@ -20,8 +20,9 @@ namespace dnd_web_app
         {
             Console.WriteLine("1 - Сюжет");
             Console.WriteLine("2 - Добавить персонажа");
-            Console.WriteLine("3 - ");
-            Console.WriteLine("4 - Выход");
+            Console.WriteLine("3 - Сохронить");
+            Console.WriteLine("4 - Загрузить сохронения");
+            Console.WriteLine("5 - Выход");
 
             int userInput = int.Parse(Console.ReadLine());
             switch (userInput)
