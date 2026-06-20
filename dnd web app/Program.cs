@@ -308,18 +308,45 @@ namespace dnd_web_app
 
     class StoryGraf
     {
-        public int Id { get; private set; }
+        public long Id { get; private set; }
         public string Title { get; private set; }
         public string Content { get; private set; }
-        public List<int> IDOfTheNearestGraphs { get; private set; } = new List<int>();
+        public List<int> NextsGraphs { get; private set; } = new List<int>();
 
         public StoryGraf(int id, string title, string content)
         {
-            Id = id;
+            Id = CreateId();
             Title = title;
             Content = content;
         }
+
+        public long CreateId()
+        {
+            Random random = new Random();
+
+            string result = "";
+
+            for (int i = 0; i < 10; i++)
+            {
+                result += random.Next(0, 10);
+            }
+
+            long id = long.Parse(result);
+
+            return id;
+        }
+
+        //Метод AddNearestGraph добавляет идентификатор следующего графа в список NextsGraphs,
+        //если он еще не присутствует в списке. Это позволяет создавать связи между графами и строить структуру сюжета.
+        public void AddNearestGraph(int graphId)
+        {
+            if (!NextsGraphs.Contains(graphId))
+            {
+                NextsGraphs.Add(graphId);
+            }
+        }
     }
+
     class StoryGrafManager
     {
         public List<StoryGraf> StoryGrafs { get; private set; }
@@ -331,15 +358,28 @@ namespace dnd_web_app
 
         public void AddStoryGraf(StoryGraf storyGraf)
         {
+            //Интерфейс вызывает метод AddStoryGraf, передавая ему объект StoryGraf который уже создан.
             StoryGrafs.Add(storyGraf);
         }
 
-        public void RemoveStoryGraf(int id)
+        public void RemoveStoryGraf(long id)
         {
             for (int i = 0; i < StoryGrafs.Count; i++)
             {
                 if (StoryGrafs[i].Id == id)
                 {
+                    List <int> RemovingId = StoryGrafs[i].NextsGraphs;
+                    for (int j = 0; j < StoryGrafs.Count; j++)
+                    {
+                        for (int k = 0; k < RemovingId.Count; k++)
+                        {
+                            if (StoryGrafs[j].NextsGraphs.Contains(RemovingId[k]))
+                            {
+                                StoryGrafs[j].NextsGraphs.Remove(RemovingId[k]);
+                                break;
+                            }
+                        }
+                    }
                     StoryGrafs.RemoveAt(i);
                     break;
                 }
