@@ -227,10 +227,6 @@ namespace dnd_web_app
 
         }
 
-        //public Creature()
-        //{
-        //}
-
         public int GetModifier(int abilityScore)
         {
             abilityScore = (abilityScore - 10) / 2;
@@ -309,5 +305,45 @@ namespace dnd_web_app
             }
         }
     }
-}
 
+    class StoryGraf
+    {
+        public int Id { get; private set; }
+        public string Title { get; private set; }
+        public string Content { get; private set; }
+        public List<int> IDOfTheNearestGraphs { get; private set; } = new List<int>();
+
+        public StoryGraf(int id, string title, string content)
+        {
+            Id = id;
+            Title = title;
+            Content = content;
+        }
+    }
+    class StoryGrafManager
+    {
+        public List<StoryGraf> StoryGrafs { get; private set; }
+
+        public StoryGrafManager()
+        {
+            StoryGrafs = new List<StoryGraf>();
+        }
+
+        public void AddStoryGraf(StoryGraf storyGraf)
+        {
+            StoryGrafs.Add(storyGraf);
+        }
+
+        public void RemoveStoryGraf(int id)
+        {
+            for (int i = 0; i < StoryGrafs.Count; i++)
+            {
+                if (StoryGrafs[i].Id == id)
+                {
+                    StoryGrafs.RemoveAt(i);
+                    break;
+                }
+            }
+        }
+    }
+}
