@@ -2,6 +2,7 @@
 using System.Xml.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Reflection.Metadata;
 
 namespace dnd_web_app
 {
@@ -26,7 +27,7 @@ namespace dnd_web_app
                 Console.WriteLine("4 - Загрузить сохронения");
                 Console.WriteLine("5 - Выход");
                 
-                int userInput = int.Parse(Console.ReadLine());
+                int userInput = ReadInt(1, 5);
                 switch (userInput)
                 {
                     case 1:
@@ -41,7 +42,9 @@ namespace dnd_web_app
                         break;
                     case 5:
                         goto end_loop;
-
+                    default:
+                        Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
+                        break;
                 }
             }
         end_loop:;
@@ -58,7 +61,8 @@ namespace dnd_web_app
                 Console.WriteLine("4 - Разорвать связь между сценами");
                 Console.WriteLine("5 - Просмотреть все сцены");
                 Console.WriteLine("6 - Вернуться в главное меню");
-                int userInput = int.Parse(Console.ReadLine());
+
+                int userInput = ReadInt(1, 6);
                 switch (userInput)
                 {
                     case 1:
@@ -78,7 +82,9 @@ namespace dnd_web_app
                         break;
                     case 6:
                         goto end_loop;
-
+                    default:
+                        Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
+                        break;
                 }
             }
         end_loop:
@@ -86,9 +92,9 @@ namespace dnd_web_app
             void CreateStoryGraf()
             {
                 Console.Write("Введите название графа: ");
-                string title = Console.ReadLine();
+                string title = ReadNotEmptyString(); 
                 Console.Write("Введите содержание графа: ");
-                string content = Console.ReadLine();
+                string content = ReadNotEmptyString();
                 StoryGraf storyGraf = new StoryGraf(0, title, content);
                 _storyGrafManager.AddStoryGraf(storyGraf);
                 Console.WriteLine("Граф успешно создан!");
@@ -120,7 +126,7 @@ namespace dnd_web_app
                 }
 
                 Console.Write("Введите номер сцен которуя хотите УДАЛИТЬ:  ");
-                int input = int.Parse(Console.ReadLine());
+                int input = ReadInt(1, _storyGrafManager.StoryGrafs.Count);
 
                 _storyGrafManager.RemoveStoryGraf(_storyGrafManager.StoryGrafs[input - 1].Id);
 
@@ -136,9 +142,9 @@ namespace dnd_web_app
                 }
 
                 Console.WriteLine("Ввелите номер первой сцены");
-                int Input1 = (int.Parse(Console.ReadLine())) - 1;
+                int Input1 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
                 Console.WriteLine("Ввелите номер второй сцены");
-                int Input2 = (int.Parse(Console.ReadLine())) - 1;
+                int Input2 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
 
                 _storyGrafManager.StoryGrafs[Input1].AddNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
                 _storyGrafManager.StoryGrafs[Input2].AddNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
@@ -154,9 +160,9 @@ namespace dnd_web_app
                 }
 
                 Console.WriteLine("Ввелите номер первой сцены");
-                int Input1 = (int.Parse(Console.ReadLine())) - 1;
+                int Input1 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
                 Console.WriteLine("Ввелите номер второй сцены");
-                int Input2 = (int.Parse(Console.ReadLine())) - 1;
+                int Input2 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
 
                 _storyGrafManager.StoryGrafs[Input1].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
                 _storyGrafManager.StoryGrafs[Input2].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
@@ -164,49 +170,98 @@ namespace dnd_web_app
                 Console.WriteLine("Связь удалена");
             }
         }
+
+        private int ReadInt()
+        {
+            while (true)
+            {
+                string input = ReadNotEmptyString();
+
+                if (int.TryParse(input, out int result))
+                {
+                    return result;
+                }
+                Console.Write("Ошибка! Введите число: ");
+            }
+        }
+
+        private int ReadInt(int min, int max)
+        {
+            while (true)
+            {
+                string input = ReadNotEmptyString() ;
+
+                if (int.TryParse(input,out int result))
+                {
+                    if (result >= min && result <= max)
+                    {
+                        return result;
+                    }
+                }
+
+                Console.WriteLine($"Введите число от {min}до {max}");
+            }
+        }
+
+        private string ReadNotEmptyString()
+        {
+            while (true)
+            {
+                string input = Console.ReadLine();
+
+                if (!string.IsNullOrWhiteSpace(input))
+                {
+                    return input;
+                }
+
+                Console.WriteLine("Поле не может бытьпустым");
+            }
+        }
+
+
         public Character CreateCharacter()
         {
             Console.Write("Ведите имя персонажа: ");
-            string name = Console.ReadLine();
+            string name = ReadNotEmptyString();
 
             Console.Write("Ведите класс персонажа: ");
-            string @class = Console.ReadLine();
+            string @class = ReadNotEmptyString();
 
             Console.Write("Ведите расу персонажа: ");
-            string race = Console.ReadLine();
+            string race = ReadNotEmptyString();
 
             Console.Write("Ведите уровень персонажа: ");
-            int level = int.Parse(Console.ReadLine());
+            int level = ReadInt(1, 20);
 
             Console.Write("Ведите класс брони персонажа: ");
-            int armorClass = int.Parse(Console.ReadLine());
+            int armorClass = ReadInt(1, 20);
 
             Console.Write("Ведите здоровье персонажа: ");
-            int health = int.Parse(Console.ReadLine());
+            int health = ReadInt(1, 20);
 
 
             Console.Write("Ведите силу персонажа: ");
-            int strong = int.Parse(Console.ReadLine());
+            int strong = ReadInt(1, 20);
 
             Console.Write("Ведите ловкость персонажа: ");
-            int dexterity = int.Parse(Console.ReadLine());
+            int dexterity = ReadInt(1, 20);
 
             Console.Write("Ведите телосложение персонажа: ");
-            int physique = int.Parse(Console.ReadLine());
+            int physique = ReadInt(1, 20);
 
             Console.Write("Ведите интеллект персонажа: ");
-            int intelligence = int.Parse(Console.ReadLine());
+            int intelligence = ReadInt(1, 20);
 
             Console.Write("Ведите мудрость персонажа: ");
-            int wisdom = int.Parse(Console.ReadLine());
+            int wisdom = ReadInt(1, 20);
 
             Console.Write("Ведите харизму персонажа: ");
-            int charisma = int.Parse(Console.ReadLine());
+            int charisma = ReadInt(1, 20);
 
             Console.WriteLine("Выбекрите какими спасбросками владеет персонаж: ");
             Console.Write("1 Сила\n2 Ловкость\n3 Телосложение\n4 Интеллект\n5 Мудрость\n6 Харизма\n");
             Console.WriteLine("Введите цифры подряд. После ввода нажмите Enter");
-            string savingThrowsInput = Console.ReadLine();
+            string savingThrowsInput = ReadNotEmptyString();
 
             bool strongSavingThrow = false;
             bool dexteritySavingThrow = false;
@@ -238,6 +293,9 @@ namespace dnd_web_app
                         break;
                     case 6:
                         charismaSavingThrow = true;
+                        break;
+                    default:
+                        Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
                         break;
                 }
             }
