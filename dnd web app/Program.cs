@@ -9,40 +9,42 @@ namespace dnd_web_app
     {
         static void Main(string[] args)
         {
-            //Creature creature = new ConsoleUI().CreateCharacter();
-            //ConsoleUI.DisplayCharacter(creature);
-            //creature.TakeDamage(10);
-            //ConsoleUI.DisplayCharacter(creature);
-            //SaveManeger.SaveCharacter(creature, "character.json");
-            Creature loadedCreature = SaveManeger.LoadCharacter("character.json");
-            ConsoleUI.DisplayCharacter(loadedCreature);
+            ConsoleUI consoleUI = new ConsoleUI();
+            consoleUI.MainMenu();
         }
     }
     class ConsoleUI
     {
-        private StoryGrafManager storyGrafManager;
+        private StoryGrafManager _storyGrafManager = new StoryGrafManager();
         public void MainMenu()
         {
-            Console.WriteLine("1 - Сюжет");
-            Console.WriteLine("2 - Добавить персонажа");
-            Console.WriteLine("3 - Сохронить");
-            Console.WriteLine("4 - Загрузить сохронения");
-            Console.WriteLine("5 - Выход");
-
-            int userInput = int.Parse(Console.ReadLine());
-            switch (userInput)
+            while (true)
             {
-                case 1:
-                    StoryMenu();
-                    break;
-                case 2:
-                    CreateCharacter();
-                    break;
-                case 3:
-                    break;
-                case 4:
-                    break;
+                Console.WriteLine("1 - Сюжет");
+                Console.WriteLine("2 - Добавить персонажа");
+                Console.WriteLine("3 - Сохронить");
+                Console.WriteLine("4 - Загрузить сохронения");
+                Console.WriteLine("5 - Выход");
+                
+                int userInput = int.Parse(Console.ReadLine());
+                switch (userInput)
+                {
+                    case 1:
+                        StoryMenu();
+                        break;
+                    case 2:
+                        CreateCharacter();
+                        break;
+                    case 3:
+                        break;
+                    case 4:
+                        break;
+                    case 5:
+                        goto end_loop;
+
+                }
             }
+        end_loop:;
         }
 
         public void StoryMenu()
@@ -53,8 +55,9 @@ namespace dnd_web_app
                 Console.WriteLine("1 - Создать сцену");
                 Console.WriteLine("2 - Удалить сцену");
                 Console.WriteLine("3 - Добавить связь между сценами");
-                Console.WriteLine("4 - Просмотреть все сцены");
-                Console.WriteLine("5 - Вернуться в главное меню");
+                Console.WriteLine("4 - Разорвать связь между сценами");
+                Console.WriteLine("5 - Просмотреть все сцены");
+                Console.WriteLine("6 - Вернуться в главное меню");
                 int userInput = int.Parse(Console.ReadLine());
                 switch (userInput)
                 {
@@ -65,16 +68,20 @@ namespace dnd_web_app
                         RemoveStotyGraf();
                         break;
                     case 3:
+                        AddСonnection();
                         break;
                     case 4:
-                        viewingAllStoryGrafs();
+                        RemoveСonnection();
                         break;
                     case 5:
+                        viewingAllStoryGrafs();
+                        break;
+                    case 6:
                         goto end_loop;
 
                 }
             }
-            end_loop:
+        end_loop:
 
             void CreateStoryGraf()
             {
@@ -83,19 +90,20 @@ namespace dnd_web_app
                 Console.Write("Введите содержание графа: ");
                 string content = Console.ReadLine();
                 StoryGraf storyGraf = new StoryGraf(0, title, content);
-                storyGrafManager.AddStoryGraf(storyGraf);
+                _storyGrafManager.AddStoryGraf(storyGraf);
                 Console.WriteLine("Граф успешно создан!");
             }
 
             void viewingAllStoryGrafs()
             {
-                for (int i = 0; i < storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
+                    Console.WriteLine("Id: " + _storyGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {storyGrafManager.StoryGrafs[i].Title}");
-                    Console.WriteLine($"Содержание: {storyGrafManager.StoryGrafs[i].Content}");
+                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Содержание: {_storyGrafManager.StoryGrafs[i].Content}");
                     Console.WriteLine("Следующие графы:");
-                    foreach (long nextGraphId in storyGrafManager.StoryGrafs[i].NextsGraphs)
+                    foreach (long nextGraphId in _storyGrafManager.StoryGrafs[i].NextsGraphs)
                     {
                         Console.WriteLine($"- {nextGraphId}");
                     }
@@ -105,21 +113,58 @@ namespace dnd_web_app
 
             void RemoveStotyGraf()
             {
-                for (int i = 0; i < storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {storyGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
                 }
 
-                Console.Write("Введите номер сцен которуя хотите УДАИТЬ:  ");
+                Console.Write("Введите номер сцен которуя хотите УДАЛИТЬ:  ");
                 int input = int.Parse(Console.ReadLine());
 
-                storyGrafManager.RemoveStoryGraf(storyGrafManager.StoryGrafs[input - 1].Id);
+                _storyGrafManager.RemoveStoryGraf(_storyGrafManager.StoryGrafs[input - 1].Id);
 
                 Console.WriteLine("Сцена удалина");
             }
+
+            void AddСonnection()
+            {
+                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                {
+                    Console.WriteLine($"Сцена {i + 1}:");
+                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                }
+
+                Console.WriteLine("Ввелите номер первой сцены");
+                int Input1 = (int.Parse(Console.ReadLine())) - 1;
+                Console.WriteLine("Ввелите номер второй сцены");
+                int Input2 = (int.Parse(Console.ReadLine())) - 1;
+
+                _storyGrafManager.StoryGrafs[Input1].AddNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
+                _storyGrafManager.StoryGrafs[Input2].AddNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
+
+                Console.WriteLine("Связь добавлена");
+            }
+            void RemoveСonnection()
+            {
+                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                {
+                    Console.WriteLine($"Сцена {i + 1}:");
+                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                }
+
+                Console.WriteLine("Ввелите номер первой сцены");
+                int Input1 = (int.Parse(Console.ReadLine())) - 1;
+                Console.WriteLine("Ввелите номер второй сцены");
+                int Input2 = (int.Parse(Console.ReadLine())) - 1;
+
+                _storyGrafManager.StoryGrafs[Input1].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
+                _storyGrafManager.StoryGrafs[Input2].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
+
+                Console.WriteLine("Связь удалена");
+            }
         }
-        public Creature CreateCharacter()
+        public Character CreateCharacter()
         {
             Console.Write("Ведите имя персонажа: ");
             string name = Console.ReadLine();
@@ -197,11 +242,11 @@ namespace dnd_web_app
                 }
             }
 
-            return new Creature(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
+            return new Character(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
         }
 
-        public static void DisplayCharacter(Creature creature)
+        public static void DisplayCharacter(Character creature)
         {
             Console.WriteLine($"Имя: {creature.Name}");
             Console.WriteLine($"Класс: {creature.Class}");
@@ -217,7 +262,7 @@ namespace dnd_web_app
             Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
         }
 
-        private static string UIBonus(Creature creature, bool savingThrows, int abilityScore)
+        private static string UIBonus(Character creature, bool savingThrows, int abilityScore)
         {
             if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
             {
@@ -232,7 +277,7 @@ namespace dnd_web_app
                 return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
             }
 
-            static int ProficiencyBonus(Creature creature, bool savingThrows)
+            static int ProficiencyBonus(Character creature, bool savingThrows)
             {
                 if (savingThrows)
                 {
@@ -246,7 +291,7 @@ namespace dnd_web_app
         }
     }
 
-    class Creature
+    class Character
     {
         public string Name { get; set; }
         public string Class { get; private set; }
@@ -276,7 +321,7 @@ namespace dnd_web_app
         public bool CharismaSavingThrow { get; private set; }
 
         [JsonConstructor]
-        public Creature(string name, string @class, string race, int level, int armorClass, int health,
+        public Character(string name, string @class, string race, int level, int armorClass, int health,
                 int strong, int dexterity, int physique, int intelligence, int wisdom, int charisma,
                 bool strongSavingThrow = false, bool dexteritySavingThrow = false, bool physiqueSavingThrow = false, bool intelligenceSavingThrow = false, bool wisdomSavingThrow = false, bool charismaSavingThrow = false)
 
@@ -356,7 +401,7 @@ namespace dnd_web_app
 
     class SaveManeger
     {
-        public static void SaveCharacter(Creature creature, string filePath)
+        public static void SaveCharacter(Character creature, string filePath)
         {
             var options = new JsonSerializerOptions
             {
@@ -366,12 +411,12 @@ namespace dnd_web_app
             File.WriteAllText(filePath, json);
         }
 
-        public static Creature LoadCharacter(string filePath)
+        public static Character LoadCharacter(string filePath)
         {
             if (File.Exists(filePath))
             {
                 string json = File.ReadAllText(filePath);
-                Creature creature = JsonSerializer.Deserialize<Creature>(json);
+                Character creature = JsonSerializer.Deserialize<Character>(json);
                 return creature;
             }
             else
@@ -389,6 +434,7 @@ namespace dnd_web_app
         public string Content { get; private set; }
         public List<long> NextsGraphs { get; private set; } = new List<long>();
 
+        private static Random _random = new Random();
         public StoryGraf(int id, string title, string content)
         {
             Id = CreateId();
@@ -398,13 +444,11 @@ namespace dnd_web_app
 
         public static long CreateId()
         {
-            Random random = new Random();
-
             string result = "";
 
             for (int i = 0; i < 10; i++)
             {
-                result += random.Next(0, 10);
+                result += _random.Next(0, 10);
             }
 
             long id = long.Parse(result);
@@ -412,13 +456,30 @@ namespace dnd_web_app
             return id;
         }
 
-        //Метод AddNearestGraph добавляет идентификатор следующего графа в список NextsGraphs,
+        //Метод AddNextGraph добавляет идентификатор следующего графа в список NextsGraphs,
         //если он еще не присутствует в списке. Это позволяет создавать связи между графами и строить структуру сюжета.
-        public void AddNearestGraph(long graphId)
+        public void AddNextGraph(long graphId)
         {
             if (!NextsGraphs.Contains(graphId))
             {
                 NextsGraphs.Add(graphId);
+            }
+        }
+
+        public void RemoveNextGraph(long graphId)
+        {
+            if (NextsGraphs.Contains(graphId))
+            {
+                if (NextsGraphs.Count > 0)
+                {
+                    for (int i = 0; NextsGraphs.Count > i; i++)
+                    {
+                        if (NextsGraphs[i] == graphId)
+                        {
+                            NextsGraphs.RemoveAt(i);
+                        }
+                    }
+                }
             }
         }
     }
