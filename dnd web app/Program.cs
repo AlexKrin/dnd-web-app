@@ -21,6 +21,7 @@ namespace dnd_web_app
         {
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("1 - Сюжет");
                 Console.WriteLine("2 - Добавить персонажа");
                 Console.WriteLine("3 - Сохронить");
@@ -55,6 +56,7 @@ namespace dnd_web_app
 
             while (true)
             {
+                Console.Clear();
                 Console.WriteLine("1 - Создать сцену");
                 Console.WriteLine("2 - Удалить сцену");
                 Console.WriteLine("3 - Добавить связь между сценами");
@@ -91,6 +93,7 @@ namespace dnd_web_app
 
             void CreateStoryGraf()
             {
+                Console.Clear();
                 Console.Write("Введите название графа: ");
                 string title = ReadNotEmptyString(); 
                 Console.Write("Введите содержание графа: ");
@@ -98,10 +101,13 @@ namespace dnd_web_app
                 StoryGraf storyGraf = new StoryGraf(0, title, content);
                 _storyGrafManager.AddStoryGraf(storyGraf);
                 Console.WriteLine("Граф успешно создан!");
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
             }
 
             void viewingAllStoryGrafs()
             {
+                Console.Clear();
                 for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine("Id: " + _storyGrafManager.StoryGrafs[i].Id);
@@ -114,11 +120,15 @@ namespace dnd_web_app
                         Console.WriteLine($"- {nextGraphId}");
                     }
                     Console.WriteLine();
+                    Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                    Console.ReadKey();
+
                 }
             }
 
             void RemoveStotyGraf()
             {
+                Console.Clear();
                 for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
@@ -131,10 +141,13 @@ namespace dnd_web_app
                 _storyGrafManager.RemoveStoryGraf(_storyGrafManager.StoryGrafs[input - 1].Id);
 
                 Console.WriteLine("Сцена удалина");
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
             }
 
             void AddСonnection()
             {
+                Console.Clear();
                 for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
@@ -150,9 +163,12 @@ namespace dnd_web_app
                 _storyGrafManager.StoryGrafs[Input2].AddNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
 
                 Console.WriteLine("Связь добавлена");
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
             }
             void RemoveСonnection()
             {
+                Console.Clear();
                 for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
@@ -168,6 +184,8 @@ namespace dnd_web_app
                 _storyGrafManager.StoryGrafs[Input2].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
 
                 Console.WriteLine("Связь удалена");
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
             }
         }
 
@@ -221,6 +239,7 @@ namespace dnd_web_app
 
         public Character CreateCharacter()
         {
+            Console.Clear();
             Console.Write("Ведите имя персонажа: ");
             string name = ReadNotEmptyString();
 
@@ -302,6 +321,8 @@ namespace dnd_web_app
 
             return new Character(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
+            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+            Console.ReadKey();
         }
 
         public static void DisplayCharacter(Character creature)
@@ -318,6 +339,9 @@ namespace dnd_web_app
             Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
             Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
             Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
+            
+            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+            Console.ReadKey();
         }
 
         private static string UIBonus(Character creature, bool savingThrows, int abilityScore)
@@ -484,6 +508,7 @@ namespace dnd_web_app
             }
         }
     }
+
 
     class StoryGraf
     {
