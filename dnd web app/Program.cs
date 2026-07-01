@@ -11,12 +11,29 @@ namespace dnd_web_app
         static void Main(string[] args)
         {
             ConsoleUI consoleUI = new ConsoleUI();
-            consoleUI.MainMenu();
+            consoleUI.Run();
         }
     }
     class ConsoleUI
     {
-        private StoryGrafManager _storyGrafManager = new StoryGrafManager();
+        private Compaing _compaing = new Compaing();
+
+        public void Run()
+        {
+            Console.WriteLine("1 - Продолжить компанию");
+            Console.WriteLine("2 - Начать новую компанию");
+            int input = int.Parse(Console.ReadLine());
+            switch (input)
+            {
+                case 1:
+                    _compaing = SaveManeger.LoadCompaing("filePathCompaing");
+                    MainMenu();
+                    break;
+                case 2:
+                    MainMenu();
+                    break;
+            }
+        }
         public void MainMenu()
         {
             while (true)
@@ -25,9 +42,9 @@ namespace dnd_web_app
                 Console.WriteLine("1 - Сюжет");
                 Console.WriteLine("2 - Добавить персонажа");
                 Console.WriteLine("3 - Сохронить");
-                Console.WriteLine("4 - Загрузить сохронения");
+                Console.WriteLine("4 - Посмотреть всех персонажей");
                 Console.WriteLine("5 - Выход");
-                
+
                 int userInput = ReadInt(1, 5);
                 switch (userInput)
                 {
@@ -38,8 +55,10 @@ namespace dnd_web_app
                         CreateCharacter();
                         break;
                     case 3:
+                        SaveManeger.SaveCompaing(_compaing, "filePathCompaing");
                         break;
                     case 4:
+                        ShowAllCharacter();
                         break;
                     case 5:
                         goto end_loop;
@@ -49,6 +68,15 @@ namespace dnd_web_app
                 }
             }
         end_loop:;
+
+            void ShowAllCharacter()
+            {
+                for (int i = 0; i < _compaing.Characters.Count; i++)
+                {
+                    Console.WriteLine($"{i + 1} {_compaing.Characters[i]}");
+
+                }
+            }
         }
 
         public void StoryMenu()
@@ -95,11 +123,11 @@ namespace dnd_web_app
             {
                 Console.Clear();
                 Console.Write("Введите название графа: ");
-                string title = ReadNotEmptyString(); 
+                string title = ReadNotEmptyString();
                 Console.Write("Введите содержание графа: ");
                 string content = ReadNotEmptyString();
                 StoryGraf storyGraf = new StoryGraf(0, title, content);
-                _storyGrafManager.AddStoryGraf(storyGraf);
+                _compaing.StoryGrafManager.AddStoryGraf(storyGraf);
                 Console.WriteLine("Граф успешно создан!");
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                 Console.ReadKey();
@@ -108,14 +136,14 @@ namespace dnd_web_app
             void viewingAllStoryGrafs()
             {
                 Console.Clear();
-                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
-                    Console.WriteLine("Id: " + _storyGrafManager.StoryGrafs[i].Id);
+                    Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
-                    Console.WriteLine($"Содержание: {_storyGrafManager.StoryGrafs[i].Content}");
+                    Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Содержание: {_compaing.StoryGrafManager.StoryGrafs[i].Content}");
                     Console.WriteLine("Следующие графы:");
-                    foreach (long nextGraphId in _storyGrafManager.StoryGrafs[i].NextsGraphs)
+                    foreach (long nextGraphId in _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs)
                     {
                         Console.WriteLine($"- {nextGraphId}");
                     }
@@ -129,16 +157,16 @@ namespace dnd_web_app
             void RemoveStotyGraf()
             {
                 Console.Clear();
-                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                 }
 
                 Console.Write("Введите номер сцен которуя хотите УДАЛИТЬ:  ");
-                int input = ReadInt(1, _storyGrafManager.StoryGrafs.Count);
+                int input = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count);
 
-                _storyGrafManager.RemoveStoryGraf(_storyGrafManager.StoryGrafs[input - 1].Id);
+                _compaing.StoryGrafManager.RemoveStoryGraf(_compaing.StoryGrafManager.StoryGrafs[input - 1].Id);
 
                 Console.WriteLine("Сцена удалина");
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
@@ -148,19 +176,19 @@ namespace dnd_web_app
             void AddСonnection()
             {
                 Console.Clear();
-                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                 }
 
                 Console.WriteLine("Ввелите номер первой сцены");
-                int Input1 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
+                int Input1 = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count) - 1;
                 Console.WriteLine("Ввелите номер второй сцены");
-                int Input2 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
+                int Input2 = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count) - 1;
 
-                _storyGrafManager.StoryGrafs[Input1].AddNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
-                _storyGrafManager.StoryGrafs[Input2].AddNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
+                _compaing.StoryGrafManager.StoryGrafs[Input1].AddNextGraph(_compaing.StoryGrafManager.StoryGrafs[Input2].Id);
+                _compaing.StoryGrafManager.StoryGrafs[Input2].AddNextGraph(_compaing.StoryGrafManager.StoryGrafs[Input1].Id);
 
                 Console.WriteLine("Связь добавлена");
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
@@ -169,19 +197,19 @@ namespace dnd_web_app
             void RemoveСonnection()
             {
                 Console.Clear();
-                for (int i = 0; i < _storyGrafManager.StoryGrafs.Count; i++)
+                for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine($"Название: {_storyGrafManager.StoryGrafs[i].Title}");
+                    Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                 }
 
                 Console.WriteLine("Ввелите номер первой сцены");
-                int Input1 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
+                int Input1 = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count) - 1;
                 Console.WriteLine("Ввелите номер второй сцены");
-                int Input2 = ReadInt(1, _storyGrafManager.StoryGrafs.Count) - 1;
+                int Input2 = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count) - 1;
 
-                _storyGrafManager.StoryGrafs[Input1].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input2].Id);
-                _storyGrafManager.StoryGrafs[Input2].RemoveNextGraph(_storyGrafManager.StoryGrafs[Input1].Id);
+                _compaing.StoryGrafManager.StoryGrafs[Input1].RemoveNextGraph(_compaing.StoryGrafManager.StoryGrafs[Input2].Id);
+                _compaing.StoryGrafManager.StoryGrafs[Input2].RemoveNextGraph(_compaing.StoryGrafManager.StoryGrafs[Input1].Id);
 
                 Console.WriteLine("Связь удалена");
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
@@ -207,9 +235,9 @@ namespace dnd_web_app
         {
             while (true)
             {
-                string input = ReadNotEmptyString() ;
+                string input = ReadNotEmptyString();
 
-                if (int.TryParse(input,out int result))
+                if (int.TryParse(input, out int result))
                 {
                     if (result >= min && result <= max)
                     {
@@ -318,11 +346,11 @@ namespace dnd_web_app
                         break;
                 }
             }
+            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+            Console.ReadKey();
 
             return new Character(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
-            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-            Console.ReadKey();
         }
 
         public static void DisplayCharacter(Character creature)
@@ -339,7 +367,7 @@ namespace dnd_web_app
             Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
             Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
             Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
-            
+
             Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
             Console.ReadKey();
         }
@@ -370,6 +398,17 @@ namespace dnd_web_app
                     return 0;
                 }
             }
+        }
+    }
+
+    class Compaing
+    {
+        public List<Character> Characters = new List<Character>();
+        public StoryGrafManager StoryGrafManager = new StoryGrafManager();
+        [JsonConstructor]
+        public Compaing()
+        {
+
         }
     }
 
@@ -481,35 +520,6 @@ namespace dnd_web_app
         public bool Belief { get; private set; }
     }
 
-    class SaveManeger
-    {
-        public static void SaveCharacter(Character creature, string filePath)
-        {
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-            string json = JsonSerializer.Serialize(creature);
-            File.WriteAllText(filePath, json);
-        }
-
-        public static Character LoadCharacter(string filePath)
-        {
-            if (File.Exists(filePath))
-            {
-                string json = File.ReadAllText(filePath);
-                Character creature = JsonSerializer.Deserialize<Character>(json);
-                return creature;
-            }
-            else
-            {
-                Console.WriteLine("Файл не найден.");
-                return null;
-            }
-        }
-    }
-
-
     class StoryGraf
     {
         public long Id { get; private set; }
@@ -575,6 +585,11 @@ namespace dnd_web_app
         {
             StoryGrafs = new List<StoryGraf>();
         }
+        [JsonConstructor]
+        public StoryGrafManager(List<StoryGraf> storyGrafs)
+        {
+            StoryGrafs = storyGrafs;
+        }
 
         public void AddStoryGraf(StoryGraf storyGraf)
         {
@@ -603,6 +618,36 @@ namespace dnd_web_app
                     StoryGrafs.RemoveAt(i);
                     break;
                 }
+            }
+        }
+    }
+    class SaveManeger
+    {
+        
+        public static void SaveCompaing(Compaing compaing, string filePathCompaing)
+        {
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+            string json = JsonSerializer.Serialize(compaing);
+            File.WriteAllText(filePathCompaing, json);
+        }
+
+        public static Compaing LoadCompaing(string filePathCompaing)
+        {
+            if (File.Exists(filePathCompaing))
+            {
+                string json = File.ReadAllText(filePathCompaing);
+                Compaing compaing = JsonSerializer.Deserialize<Compaing>(json);
+                return compaing;
+            }
+            else
+            {
+                //Перенести в ConsoleUI вывод ошибки
+                Console.WriteLine("Файл не найден.");
+                Console.ReadKey();
+                return null;
             }
         }
     }
