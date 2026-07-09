@@ -18,11 +18,12 @@ namespace dnd_web_app
     {
         private Compaing _compaing = new Compaing();
 
+
         public void Run()
         {
             Console.WriteLine("1 - Продолжить компанию");
             Console.WriteLine("2 - Начать новую компанию");
-            int input = int.Parse(Console.ReadLine());
+            int input = ReadInt(1, 2);
             switch (input)
             {
                 case 1:
@@ -52,7 +53,8 @@ namespace dnd_web_app
                         StoryMenu();
                         break;
                     case 2:
-                        CreateCharacter();
+                        //_compaing.Characters.Add(CreateCharacter());
+                        AddCharacter();
                         break;
                     case 3:
                         SaveManeger.SaveCompaing(_compaing, "filePathCompaing");
@@ -71,11 +73,13 @@ namespace dnd_web_app
 
             void ShowAllCharacter()
             {
+                Console.Clear();
                 for (int i = 0; i < _compaing.Characters.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1} {_compaing.Characters[i]}");
-
+                    Console.WriteLine($"{i + 1}");
+                    DisplayCharacter(_compaing.Characters[i]);
                 }
+                Console.ReadKey();
             }
         }
 
@@ -126,7 +130,7 @@ namespace dnd_web_app
                 string title = ReadNotEmptyString();
                 Console.Write("Введите содержание графа: ");
                 string content = ReadNotEmptyString();
-                StoryGraf storyGraf = new StoryGraf(0, title, content);
+                StoryGraf storyGraf = new StoryGraf(title, content);
                 _compaing.StoryGrafManager.AddStoryGraf(storyGraf);
                 Console.WriteLine("Граф успешно создан!");
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
@@ -138,8 +142,8 @@ namespace dnd_web_app
                 Console.Clear();
                 for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
-                    Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine($"Сцена {i + 1}:");
+                    Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                     Console.WriteLine($"Содержание: {_compaing.StoryGrafManager.StoryGrafs[i].Content}");
                     Console.WriteLine("Следующие графы:");
@@ -148,10 +152,9 @@ namespace dnd_web_app
                         Console.WriteLine($"- {nextGraphId}");
                     }
                     Console.WriteLine();
+                }
                     Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                     Console.ReadKey();
-
-                }
             }
 
             void RemoveStotyGraf()
@@ -194,6 +197,7 @@ namespace dnd_web_app
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                 Console.ReadKey();
             }
+
             void RemoveСonnection()
             {
                 Console.Clear();
@@ -355,21 +359,29 @@ namespace dnd_web_app
 
         public static void DisplayCharacter(Character creature)
         {
-            Console.WriteLine($"Имя: {creature.Name}");
-            Console.WriteLine($"Класс: {creature.Class}");
-            Console.WriteLine($"Раса: {creature.Race}");
-            Console.WriteLine($"Уровень: {creature.Level}");
-            Console.WriteLine($"Класс брони: {creature.ArmorClass}");
-            Console.WriteLine($"Здоровье: {creature.Health}");
-            Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
-            Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
-            Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
-            Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
-            Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
-            Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
+            if (creature == null)
+            {
+                Console.WriteLine("Первонажа нет");
+            }
+            else
+            {
+                Console.WriteLine($"Имя: {creature.Name}");
+                Console.WriteLine($"Класс: {creature.Class}");
+                Console.WriteLine($"Раса: {creature.Race}");
+                Console.WriteLine($"Уровень: {creature.Level}");
+                Console.WriteLine($"Класс брони: {creature.ArmorClass}");
+                Console.WriteLine($"Здоровье: {creature.Health}");
+                Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
+                Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
+                Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
+                Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
+                Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
+                Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
 
-            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-            Console.ReadKey();
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+
+            }
+
         }
 
         private static string UIBonus(Character creature, bool savingThrows, int abilityScore)
@@ -399,12 +411,125 @@ namespace dnd_web_app
                 }
             }
         }
+        //тестовый метод для быстрого добавления нестольких персонажей и сцен без связей 
+        private void AddCharacter()
+        {
+            // ---------- Персонажи ----------
+
+            _compaing.Characters.Add(new Character(
+                "Альрик",
+                "Воин",
+                "Человек",
+                3,
+                17,
+                32,
+                16,
+                12,
+                15,
+                10,
+                11,
+                8,
+                true,
+                false,
+                true,
+                false,
+                false,
+                false));
+
+            _compaing.Characters.Add(new Character(
+                "Лира",
+                "Волшебник",
+                "Высший эльф",
+                5,
+                13,
+                24,
+                8,
+                14,
+                12,
+                18,
+                16,
+                13,
+                false,
+                false,
+                false,
+                true,
+                true,
+                false));
+
+            _compaing.Characters.Add(new Character(
+                "Брог",
+                "Варвар",
+                "Полуорк",
+                4,
+                15,
+                47,
+                18,
+                13,
+                17,
+                8,
+                10,
+                9,
+                true,
+                false,
+                true,
+                false,
+                false,
+                false));
+
+            _compaing.Characters.Add(new Character(
+                "Торин",
+                "Паладин",
+                "Дворф",
+                6,
+                19,
+                56,
+                18,
+                10,
+                16,
+                10,
+                14,
+                12,
+                true,
+                false,
+                true,
+                false,
+                true,
+                true));
+
+            // ---------- Сцены ----------
+
+            _compaing.StoryGrafManager.AddStoryGraf(
+                new StoryGraf(
+                    "Начало приключения",
+                    "Герои прибывают в небольшую деревню и получают первое задание."));
+
+            _compaing.StoryGrafManager.AddStoryGraf(
+                new StoryGraf(
+                    "Таверна",
+                    "В таверне можно собрать слухи и поговорить с местными жителями."));
+
+            _compaing.StoryGrafManager.AddStoryGraf(
+                new StoryGraf(
+                    "Лес",
+                    "Следы ведут в густой лес, где недавно видели гоблинов."));
+
+            _compaing.StoryGrafManager.AddStoryGraf(
+                new StoryGraf(
+                    "Пещера",
+                    "Обнаружен вход в логово гоблинов."));
+
+            _compaing.StoryGrafManager.AddStoryGraf(
+                new StoryGraf(
+                    "Финальная битва",
+                    "Главарь банды готовится встретить героев."));
+        }
     }
 
     class Compaing
     {
-        public List<Character> Characters = new List<Character>();
-        public StoryGrafManager StoryGrafManager = new StoryGrafManager();
+        public List<Character> Characters { get;  set; } = new();
+        public StoryGrafManager StoryGrafManager { get;  set; } = new();
+
         [JsonConstructor]
         public Compaing()
         {
@@ -528,7 +653,8 @@ namespace dnd_web_app
         public List<long> NextsGraphs { get; private set; } = new List<long>();
 
         private static Random _random = new Random();
-        public StoryGraf(int id, string title, string content)
+        [JsonConstructor]
+        public StoryGraf(string title, string content)
         {
             Id = CreateId();
             Title = title;
@@ -579,12 +705,14 @@ namespace dnd_web_app
 
     class StoryGrafManager
     {
-        public List<StoryGraf> StoryGrafs { get; private set; }
+        public List<StoryGraf> StoryGrafs { get; private set; } = new List<StoryGraf>();
+
 
         public StoryGrafManager()
         {
             StoryGrafs = new List<StoryGraf>();
         }
+
         [JsonConstructor]
         public StoryGrafManager(List<StoryGraf> storyGrafs)
         {
@@ -623,7 +751,6 @@ namespace dnd_web_app
     }
     class SaveManeger
     {
-        
         public static void SaveCompaing(Compaing compaing, string filePathCompaing)
         {
             var options = new JsonSerializerOptions
@@ -631,6 +758,8 @@ namespace dnd_web_app
                 WriteIndented = true
             };
             string json = JsonSerializer.Serialize(compaing);
+            Console.WriteLine(json);
+            Console.ReadKey();
             File.WriteAllText(filePathCompaing, json);
         }
 
@@ -640,6 +769,13 @@ namespace dnd_web_app
             {
                 string json = File.ReadAllText(filePathCompaing);
                 Compaing compaing = JsonSerializer.Deserialize<Compaing>(json);
+                if (compaing == null)
+                {
+                    Console.WriteLine("Файл пуст");
+                    Console.ReadKey();
+                    return compaing;
+                }
+
                 return compaing;
             }
             else
