@@ -530,11 +530,7 @@ namespace dnd_web_app
         public List<Character> Characters { get;  set; } = new();
         public StoryGrafManager StoryGrafManager { get;  set; } = new();
 
-        [JsonConstructor]
-        public Compaing()
-        {
-
-        }
+        
     }
 
     class Character
