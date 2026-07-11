@@ -145,13 +145,17 @@ namespace dnd_web_app
                 for (int i = 0; i < _compaing.StoryGrafManager.StoryGrafs.Count; i++)
                 {
                     Console.WriteLine($"Сцена {i + 1}:");
-                    Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                     Console.WriteLine($"Содержание: {_compaing.StoryGrafManager.StoryGrafs[i].Content}");
+                    Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine("Следующие графы:");
-                    foreach (long nextGraphId in _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs)
+                    for(int j = 0; j < _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs.Count; j++)
                     {
-                        Console.WriteLine($"- {nextGraphId}");
+                        List<StoryGraf> nextGraphs = _compaing.StoryGrafManager.StoryGrafs.FindAll(g => _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs.Contains(g.Id));
+                        foreach (StoryGraf graph in nextGraphs)
+                        {
+                            Console.WriteLine(graph.Title);
+                        }
                     }
                     Console.WriteLine();
                 }
