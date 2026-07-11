@@ -79,6 +79,8 @@ namespace dnd_web_app
                     Console.WriteLine($"{i + 1}");
                     DisplayCharacter(_compaing.Characters[i]);
                 }
+
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                 Console.ReadKey();
             }
         }
@@ -153,8 +155,9 @@ namespace dnd_web_app
                     }
                     Console.WriteLine();
                 }
-                    Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-                    Console.ReadKey();
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
+
             }
 
             void RemoveStotyGraf()
@@ -166,7 +169,7 @@ namespace dnd_web_app
                     Console.WriteLine($"Название: {_compaing.StoryGrafManager.StoryGrafs[i].Title}");
                 }
 
-                Console.Write("Введите номер сцен которуя хотите УДАЛИТЬ:  ");
+                Console.Write("Введите номер сцены которуя хотите УДАЛИТЬ:  ");
                 int input = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count);
 
                 _compaing.StoryGrafManager.RemoveStoryGraf(_compaing.StoryGrafManager.StoryGrafs[input - 1].Id);
@@ -377,11 +380,7 @@ namespace dnd_web_app
                 Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
                 Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
                 Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
-
-                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-
             }
-
         }
 
         private static string UIBonus(Character creature, bool savingThrows, int abilityScore)
@@ -527,15 +526,26 @@ namespace dnd_web_app
 
     class Compaing
     {
-        public List<Character> Characters { get;  set; } = new();
-        public StoryGrafManager StoryGrafManager { get;  set; } = new();
+        public List<Character> Characters { get; private set; } = new();
+        public StoryGrafManager StoryGrafManager { get; private set; } = new();
 
-        
+        [JsonConstructor]
+        public Compaing(List<Character> characters, StoryGrafManager storyGrafManager)
+        {
+            Characters = characters;
+            StoryGrafManager = storyGrafManager;
+        }
+
+        public Compaing()
+        {
+            Characters = new List<Character>();
+            StoryGrafManager = new StoryGrafManager();
+        }
     }
 
     class Character
     {
-        public string Name { get; set; }
+        public string Name { get; private set; }
         public string Class { get; private set; }
         public string Race { get; private set; }
         public int Level { get; private set; }
@@ -649,7 +659,16 @@ namespace dnd_web_app
         public List<long> NextsGraphs { get; private set; } = new List<long>();
 
         private static Random _random = new Random();
+
         [JsonConstructor]
+        public StoryGraf(long id, string title, string content, List<long> nextsGraphs)
+        {
+            Id = id;
+            Title = title;
+            Content = content;
+            NextsGraphs = nextsGraphs;
+        }
+
         public StoryGraf(string title, string content)
         {
             Id = CreateId();
@@ -727,17 +746,18 @@ namespace dnd_web_app
             {
                 if (StoryGrafs[i].Id == id)
                 {
-                    List<long> RemovingId = StoryGrafs[i].NextsGraphs;
+                    List<long> removingId = StoryGrafs[i].NextsGraphs;
                     for (int j = 0; j < StoryGrafs.Count; j++)
                     {
-                        for (int k = 0; k < RemovingId.Count; k++)
+                        for (int k = 0; k < removingId.Count; k++)
                         {
-                            if (StoryGrafs[j].NextsGraphs.Contains(RemovingId[k]))
+                            if (StoryGrafs[j].NextsGraphs.Contains(id))
                             {
-                                StoryGrafs[j].NextsGraphs.Remove(RemovingId[k]);
+                                StoryGrafs[j].NextsGraphs.Remove(id);
                                 break;
                             }
                         }
+
                     }
                     StoryGrafs.RemoveAt(i);
                     break;
