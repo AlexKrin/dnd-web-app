@@ -128,7 +128,7 @@ namespace dnd_web_app
             void CreateStoryGraf()
             {
                 Console.Clear();
-                Console.Write("Введите название графа: ");
+                Console.Write("Введите название графа: ");             
                 string title = ReadNotEmptyString();
                 Console.Write("Введите содержание графа: ");
                 string content = ReadNotEmptyString();
@@ -149,13 +149,11 @@ namespace dnd_web_app
                     Console.WriteLine($"Содержание: {_compaing.StoryGrafManager.StoryGrafs[i].Content}");
                     Console.WriteLine("Id: " + _compaing.StoryGrafManager.StoryGrafs[i].Id);
                     Console.WriteLine("Следующие графы:");
-                    for(int j = 0; j < _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs.Count; j++)
+
+                    List<StoryGraf> nextGraphs = _compaing.StoryGrafManager.StoryGrafs.FindAll(g => _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs.Contains(g.Id));
+                    foreach (StoryGraf graph in nextGraphs)
                     {
-                        List<StoryGraf> nextGraphs = _compaing.StoryGrafManager.StoryGrafs.FindAll(g => _compaing.StoryGrafManager.StoryGrafs[i].NextsGraphs.Contains(g.Id));
-                        foreach (StoryGraf graph in nextGraphs)
-                        {
-                            Console.WriteLine(graph.Title);
-                        }
+                        Console.WriteLine(graph.Title);
                     }
                     Console.WriteLine();
                 }
