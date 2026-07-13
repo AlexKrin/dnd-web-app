@@ -41,28 +41,32 @@ namespace dnd_web_app
             {
                 Console.Clear();
                 Console.WriteLine("1 - Сюжет");
-                Console.WriteLine("2 - Добавить персонажа");
-                Console.WriteLine("3 - Сохронить");
-                Console.WriteLine("4 - Посмотреть всех персонажей");
-                Console.WriteLine("5 - Выход");
+                Console.WriteLine("2 - Сохранить");
+                Console.WriteLine("3 - Добавить персонажа");
+                Console.WriteLine("4 - Добавить персонажа");
+                Console.WriteLine("5 - Посмотреть всех персонажей");
+                Console.WriteLine("6 - Выход");
 
-                int userInput = ReadInt(1, 5);
+                int userInput = ReadInt(1, 6);
                 switch (userInput)
                 {
                     case 1:
                         StoryMenu();
                         break;
                     case 2:
-                        //_compaing.Characters.Add(CreateCharacter());
-                        AddCharacter();
+                        SaveManeger.SaveCompaing(_compaing, "filePathCompaing");
                         break;
                     case 3:
-                        SaveManeger.SaveCompaing(_compaing, "filePathCompaing");
+                        _compaing.Characters.Add(CreateCharacter());
+                        //AddCharacter();
                         break;
                     case 4:
                         ShowAllCharacter();
                         break;
                     case 5:
+                        ShowAllCharacter();
+                        break;
+                    case 6:
                         goto end_loop;
                     default:
                         Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
@@ -76,12 +80,36 @@ namespace dnd_web_app
                 Console.Clear();
                 for (int i = 0; i < _compaing.Characters.Count; i++)
                 {
-                    Console.WriteLine($"{i + 1}");
+                    Console.Write($"{i + 1}");
                     DisplayCharacter(_compaing.Characters[i]);
                 }
 
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                 Console.ReadKey();
+            }
+
+            void RemoveCharacter()
+            {
+                Console.Clear();
+                for (int i = 0; i < _compaing.Characters.Count; i++)
+                {
+                    Console.WriteLine($"Персонаж {i + 1}:");
+                    Console.WriteLine($"Имя: {_compaing.Characters[i].Name}");
+                }
+                Console.Write("Введите номер персонажа которуя хотите УДАЛИТЬ:  ");
+                int input = ReadInt(1, _compaing.Characters.Count);
+                if (ConfirmationOfDeletion(input - 1))
+                {
+                    _compaing.Characters.RemoveAt(input - 1);
+                    Console.WriteLine("Персонаж удален");
+                }
+                else
+                {
+                    Console.WriteLine("Удаление отменено");
+                }
+                Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                Console.ReadKey();
+                Console.Clear();
             }
         }
 
@@ -128,7 +156,7 @@ namespace dnd_web_app
             void CreateStoryGraf()
             {
                 Console.Clear();
-                Console.Write("Введите название графа: ");             
+                Console.Write("Введите название графа: ");
                 string title = ReadNotEmptyString();
                 Console.Write("Введите содержание графа: ");
                 string content = ReadNotEmptyString();
@@ -173,12 +201,18 @@ namespace dnd_web_app
 
                 Console.Write("Введите номер сцены которуя хотите УДАЛИТЬ:  ");
                 int input = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count);
-
-                _compaing.StoryGrafManager.RemoveStoryGraf(_compaing.StoryGrafManager.StoryGrafs[input - 1].Id);
-
-                Console.WriteLine("Сцена удалина");
+                if (ConfirmationOfDeletion(input - 1))
+                {
+                    _compaing.StoryGrafManager.RemoveStoryGraf(_compaing.StoryGrafManager.StoryGrafs[input - 1].Id);
+                    Console.WriteLine("Сцена удалина");
+                }
+                else
+                {
+                    Console.WriteLine("Удаление отменено");
+                }
                 Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                 Console.ReadKey();
+                Console.Clear();
             }
 
             void AddСonnection()
@@ -523,6 +557,22 @@ namespace dnd_web_app
                 new StoryGraf(
                     "Финальная битва",
                     "Главарь банды готовится встретить героев."));
+        }
+
+        public bool ConfirmationOfDeletion(int index)
+        {
+            Console.WriteLine($"Вы уверены что хотите удалить {_compaing.StoryGrafManager.StoryGrafs[index].Title}");
+            ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
+            ConsoleKey keyInfo = consoleKeyInfo.Key;
+            switch (keyInfo)
+            {
+                case ConsoleKey.Y:
+                    return true;
+                case ConsoleKey.N:
+                    return false;
+                default:
+                    return ConfirmationOfDeletion(index);
+            }
         }
     }
 
