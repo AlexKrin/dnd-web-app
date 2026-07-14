@@ -562,6 +562,7 @@ namespace dnd_web_app
         public bool ConfirmationOfDeletion(int index)
         {
             Console.WriteLine($"Вы уверены что хотите удалить {_compaing.StoryGrafManager.StoryGrafs[index].Title}");
+            Console.WriteLine("Нажмите Y/N для подтверждения");
             ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
             ConsoleKey keyInfo = consoleKeyInfo.Key;
             switch (keyInfo)
