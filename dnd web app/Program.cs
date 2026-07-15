@@ -43,7 +43,7 @@ namespace dnd_web_app
                 Console.WriteLine("1 - Сюжет");
                 Console.WriteLine("2 - Сохранить");
                 Console.WriteLine("3 - Добавить персонажа");
-                Console.WriteLine("4 - Добавить персонажа");
+                Console.WriteLine("4 - Удалить персонажа");
                 Console.WriteLine("5 - Посмотреть всех персонажей");
                 Console.WriteLine("6 - Выход");
 
@@ -61,7 +61,7 @@ namespace dnd_web_app
                         //AddCharacter();
                         break;
                     case 4:
-                        ShowAllCharacter();
+                        RemoveCharacter();
                         break;
                     case 5:
                         ShowAllCharacter();
