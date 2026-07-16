@@ -98,7 +98,7 @@ namespace dnd_web_app
                 }
                 Console.Write("Введите номер персонажа которуя хотите УДАЛИТЬ:  ");
                 int input = ReadInt(1, _compaing.Characters.Count);
-                if (ConfirmationOfDeletion(input - 1))
+                if (ConfirmationOfDeletion(input - 1, _compaing.Characters[input - 1].Name))
                 {
                     _compaing.Characters.RemoveAt(input - 1);
                     Console.WriteLine("Персонаж удален");
@@ -201,7 +201,7 @@ namespace dnd_web_app
 
                 Console.Write("Введите номер сцены которуя хотите УДАЛИТЬ:  ");
                 int input = ReadInt(1, _compaing.StoryGrafManager.StoryGrafs.Count);
-                if (ConfirmationOfDeletion(input - 1))
+                if (ConfirmationOfDeletion(input - 1, _compaing.StoryGrafManager.StoryGrafs[input - 1].Title))
                 {
                     _compaing.StoryGrafManager.RemoveStoryGraf(_compaing.StoryGrafManager.StoryGrafs[input - 1].Id);
                     Console.WriteLine("Сцена удалина");
@@ -559,9 +559,9 @@ namespace dnd_web_app
                     "Главарь банды готовится встретить героев."));
         }
 
-        public bool ConfirmationOfDeletion(int index)
+        public bool ConfirmationOfDeletion(int index, string delineonObjekt)
         {
-            Console.WriteLine($"Вы уверены что хотите удалить {_compaing.StoryGrafManager.StoryGrafs[index].Title}");
+            Console.WriteLine($"Вы уверены что хотите удалить {delineonObjekt}");
             Console.WriteLine("Нажмите Y/N для подтверждения");
             ConsoleKeyInfo consoleKeyInfo = Console.ReadKey();
             ConsoleKey keyInfo = consoleKeyInfo.Key;
@@ -572,7 +572,7 @@ namespace dnd_web_app
                 case ConsoleKey.N:
                     return false;
                 default:
-                    return ConfirmationOfDeletion(index);
+                    return ConfirmationOfDeletion(index, delineonObjekt);
             }
         }
     }
