@@ -103,31 +103,32 @@ namespace dnd_web_app
             // Метод UIBonus возвращает строковое представление модификатора способности персонажа с учетом владения соответствующим спасброском.
             string UIBonus(Character creature, bool savingThrows, int abilityScore)
             {
-                if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
+                if (creature.GetModifier(abilityScore) > 0)
                 {
-                    return "+" + (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                    return "+" + (creature.GetModifier(abilityScore));
                 }
-                else if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) == 0)
+                else if (creature.GetModifier(abilityScore) == 0)
                 {
-                    return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                    return "0";
                 }
                 else
                 {
-                    return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                    return "-" + creature.GetModifier(abilityScore);
                 }
 
                 // Метод ProficiencyBonus возвращает бонус владения персонажа, если он владеет соответствующим спасброском.
-                int ProficiencyBonus(Character creature, bool savingThrows)
-                {
-                    if (savingThrows)
-                    {
-                        return creature.GetProficiencyBonus();
-                    }
-                    else
-                    {
-                        return 0;
-                    }
-                }
+                //оствить на потом
+                //int ProficiencyBonus(Character creature, bool savingThrows)
+                //{
+                //    if (savingThrows)
+                //    {
+                //        return creature.GetProficiencyBonus();
+                //    }
+                //    else
+                //    {
+                //        return 0;
+                //    }
+                //}
             }
 
             void ShowAllCharacter()
