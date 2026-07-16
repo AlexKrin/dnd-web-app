@@ -405,52 +405,70 @@ namespace dnd_web_app
             Console.Write("Ведите харизму персонажа: ");
             int charisma = ReadInt(1, 20);
 
-            Console.WriteLine("Выбекрите какими спасбросками владеет персонаж: ");
-            Console.Write("1 Сила\n2 Ловкость\n3 Телосложение\n4 Интеллект\n5 Мудрость\n6 Харизма\n");
-            Console.WriteLine("Введите цифры подряд. После ввода нажмите Enter");
-            string savingThrowsInput = ReadNotEmptyString();
+            Console.WriteLine("Персонаж владеет спас бросками");
+            Console.WriteLine("1 - Да");
+            Console.WriteLine("2 - Нет");
 
-            bool strongSavingThrow = false;
-            bool dexteritySavingThrow = false;
-            bool physiqueSavingThrow = false;
-            bool intelligenceSavingThrow = false;
-            bool wisdomSavingThrow = false;
-            bool charismaSavingThrow = false;
+            int input = ReadInt(1, 2);
 
-            for (int i = 0; i < savingThrowsInput.Length; i++)
+
+            switch (input)
             {
-                int buf = int.Parse(savingThrowsInput[i].ToString());
+                case 1:
+                    Console.WriteLine("Выбекрите какими спасбросками владеет персонаж: ");
+                    Console.Write("1 Сила\n2 Ловкость\n3 Телосложение\n4 Интеллект\n5 Мудрость\n6 Харизма\n");
+                    Console.WriteLine("Введите цифры подряд. После ввода нажмите Enter");
+                    string savingThrowsInput = ReadNotEmptyString();
 
-                switch (buf)
-                {
-                    case 1:
-                        strongSavingThrow = true;
-                        break;
-                    case 2:
-                        dexteritySavingThrow = true;
-                        break;
-                    case 3:
-                        physiqueSavingThrow = true;
-                        break;
-                    case 4:
-                        intelligenceSavingThrow = true;
-                        break;
-                    case 5:
-                        wisdomSavingThrow = true;
-                        break;
-                    case 6:
-                        charismaSavingThrow = true;
-                        break;
-                    default:
-                        Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
-                        break;
-                }
+                    bool strongSavingThrow = false;
+                    bool dexteritySavingThrow = false;
+                    bool physiqueSavingThrow = false;
+                    bool intelligenceSavingThrow = false;
+                    bool wisdomSavingThrow = false;
+                    bool charismaSavingThrow = false;
+
+                    for (int i = 0; i < savingThrowsInput.Length; i++)
+                    {
+                        int buf = int.Parse(savingThrowsInput[i].ToString());
+
+                        switch (buf)
+                        {
+                            case 1:
+                                strongSavingThrow = true;
+                                break;
+                            case 2:
+                                dexteritySavingThrow = true;
+                                break;
+                            case 3:
+                                physiqueSavingThrow = true;
+                                break;
+                            case 4:
+                                intelligenceSavingThrow = true;
+                                break;
+                            case 5:
+                                wisdomSavingThrow = true;
+                                break;
+                            case 6:
+                                charismaSavingThrow = true;
+                                break;
+                            default:
+                                Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
+                                break;
+                        }
+                    }
+                    Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+
+                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma,
+                    strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
+                case 2:
+                    Console.WriteLine("Персонаж не владеет спас бросками");
+                    Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+
+                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma);
+                default:
+                    Console.WriteLine("Невозможрое действие. Выберите из предоставленного списка");
+                    return null;
             }
-            Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-            Console.ReadKey();
-
-            return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma,
-                strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
         }
 
         //тестовый метод для быстрого добавления нестольких персонажей и сцен без связей 
