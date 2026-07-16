@@ -574,13 +574,6 @@ namespace dnd_web_app
             return abilityScore;
         }
 
-        public int GetProficiencyBonus()
-        {
-            double OwnershipBonus = Math.Ceiling((Level - 1) / 4.0);
-            int RoundedOwnershipBonus = (int)OwnershipBonus;
-            return RoundedOwnershipBonus + 2;
-        }
-
         public void TakeDamage(int damage)
         {
             if (Health - damage >= 0)
