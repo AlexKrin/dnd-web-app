@@ -75,6 +75,61 @@ namespace dnd_web_app
             }
         end_loop:;
 
+            void DisplayCharacter(Character creature)
+            {
+                if (creature == null)
+                {
+                    Console.WriteLine("Первонажа нет");
+                }
+                else
+                {
+                    Console.WriteLine($"Имя: {creature.Name}");
+                    Console.WriteLine($"Вид: {creature.Type}");
+                    Console.WriteLine($"Размер: {creature.Size}");
+                    Console.WriteLine($"Опасность: {creature.Danger}");
+                    Console.WriteLine($"бонус мастерства: {creature.ProficiencyBonus}");
+                    Console.WriteLine($"Класс брони: {creature.ArmorClass}");
+                    Console.WriteLine($"Скорость: {creature.Speed}");
+                    Console.WriteLine($"Здоровье: {creature.Health}");
+                    Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
+                    Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
+                    Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
+                    Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
+                    Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
+                    Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
+                }
+            }
+            //Исправить после изменения класса Character. Метод UIBonus должен принимать объект Character и возвращать строковое представление модификатора способности персонажа.
+            // Метод UIBonus возвращает строковое представление модификатора способности персонажа с учетом владения соответствующим спасброском.
+            string UIBonus(Character creature, bool savingThrows, int abilityScore)
+            {
+                if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
+                {
+                    return "+" + (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                }
+                else if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) == 0)
+                {
+                    return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                }
+                else
+                {
+                    return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
+                }
+
+                // Метод ProficiencyBonus возвращает бонус владения персонажа, если он владеет соответствующим спасброском.
+                int ProficiencyBonus(Character creature, bool savingThrows)
+                {
+                    if (savingThrows)
+                    {
+                        return creature.GetProficiencyBonus();
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                }
+            }
+
             void ShowAllCharacter()
             {
                 Console.Clear();
@@ -314,14 +369,14 @@ namespace dnd_web_app
             Console.Write("Ведите имя персонажа: ");
             string name = ReadNotEmptyString();
 
-            Console.Write("Ведите класс персонажа: ");
-            string @class = ReadNotEmptyString();
+            Console.Write("Ведите вид персонажа: ");
+            string type = ReadNotEmptyString();
 
-            Console.Write("Ведите расу персонажа: ");
-            string race = ReadNotEmptyString();
+            Console.Write("Ведите размер персонажа: ");
+            string size = ReadNotEmptyString();
 
-            Console.Write("Ведите уровень персонажа: ");
-            int level = ReadInt(1, 20);
+            Console.Write("Ведите опасность персонажа: ");
+            int danger = ReadInt(1, 20);
 
             Console.Write("Ведите класс брони персонажа: ");
             int armorClass = ReadInt(1, 20);
@@ -329,6 +384,8 @@ namespace dnd_web_app
             Console.Write("Ведите здоровье персонажа: ");
             int health = ReadInt(1, 20);
 
+            Console.Write("Ведите бонус мастерства персонажа: ");
+            int proficiencyBonus = ReadInt(1, 20);
 
             Console.Write("Ведите силу персонажа: ");
             int strong = ReadInt(1, 20);
@@ -392,60 +449,10 @@ namespace dnd_web_app
             Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
             Console.ReadKey();
 
-            return new Character(name, @class, race, level, armorClass, health, strong, dexterity, physique, intelligence, wisdom, charisma,
+            return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma,
                 strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
         }
 
-        public static void DisplayCharacter(Character creature)
-        {
-            if (creature == null)
-            {
-                Console.WriteLine("Первонажа нет");
-            }
-            else
-            {
-                Console.WriteLine($"Имя: {creature.Name}");
-                Console.WriteLine($"Класс: {creature.Class}");
-                Console.WriteLine($"Раса: {creature.Race}");
-                Console.WriteLine($"Уровень: {creature.Level}");
-                Console.WriteLine($"Класс брони: {creature.ArmorClass}");
-                Console.WriteLine($"Здоровье: {creature.Health}");
-                Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
-                Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
-                Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
-                Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
-                Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
-                Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
-            }
-        }
-
-        private static string UIBonus(Character creature, bool savingThrows, int abilityScore)
-        {
-            if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) > 0)
-            {
-                return "+" + (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
-            }
-            else if (creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows) == 0)
-            {
-                return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
-            }
-            else
-            {
-                return Convert.ToString(creature.GetModifier(abilityScore) + ProficiencyBonus(creature, savingThrows));
-            }
-
-            static int ProficiencyBonus(Character creature, bool savingThrows)
-            {
-                if (savingThrows)
-                {
-                    return creature.GetProficiencyBonus();
-                }
-                else
-                {
-                    return 0;
-                }
-            }
-        }
         //тестовый метод для быстрого добавления нестольких персонажей и сцен без связей 
         private void AddCharacter()
         {
@@ -599,11 +606,13 @@ namespace dnd_web_app
     class Character
     {
         public string Name { get; private set; }
-        public string Class { get; private set; }
-        public string Race { get; private set; }
-        public int Level { get; private set; }
+        public string Type { get; private set; }
+        public string Size { get; private set; }
         public int ArmorClass { get; private set; }
+        public int Speed { get; private set; }
+        public int Danger { get; private set; }
         public int Health { get; private set; }
+        public int ProficiencyBonus { get; private set; }
 
         public int Strong { get; private set; }
         public bool StrongSavingThrow { get; private set; }
@@ -626,17 +635,18 @@ namespace dnd_web_app
         public bool CharismaSavingThrow { get; private set; }
 
         [JsonConstructor]
-        public Character(string name, string @class, string race, int level, int armorClass, int health,
+        public Character(string name, string type, string size, int danger, int armorClass, int health, int proficiencyBonus,
                 int strong, int dexterity, int physique, int intelligence, int wisdom, int charisma,
                 bool strongSavingThrow = false, bool dexteritySavingThrow = false, bool physiqueSavingThrow = false, bool intelligenceSavingThrow = false, bool wisdomSavingThrow = false, bool charismaSavingThrow = false)
 
         {
             Name = name;
-            Class = @class;
-            Race = race;
-            Level = level;
+            Type = type;
+            Size = size;
+            Danger = danger;
             ArmorClass = armorClass;
             Health = health;
+            ProficiencyBonus = proficiencyBonus;
             Strong = strong;
             Dexterity = dexterity;
             Physique = physique;
