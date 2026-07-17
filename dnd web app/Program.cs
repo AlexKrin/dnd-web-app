@@ -458,16 +458,17 @@ namespace dnd_web_app
                         }
                     }
                     Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-
+                    Console.ReadKey();
                     return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma,
                     strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
                 case 2:
                     Console.WriteLine("Персонаж не владеет спас бросками");
                     Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
-
+                    Console.ReadKey();
                     return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma);
                 default:
-                    Console.WriteLine("Невозможрое действие. Выберите из предоставленного списка");
+                    Console.WriteLine("Невозможрое событие");
+                    Console.ReadKey();
                     return null;
             }
         }
