@@ -405,7 +405,7 @@ namespace dnd_web_app
 
             Console.Write("Ведите харизму персонажа: ");
             int charisma = ReadInt(1, 20);
-
+           
             Console.WriteLine("Персонаж владеет спас бросками");
             Console.WriteLine("1 - Да");
             Console.WriteLine("2 - Нет");
@@ -459,17 +459,44 @@ namespace dnd_web_app
                     }
                     Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                     Console.ReadKey();
-                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma,
+                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma, AdditionalInformation(),
                     strongSavingThrow, dexteritySavingThrow, physiqueSavingThrow, intelligenceSavingThrow, wisdomSavingThrow, charismaSavingThrow);
                 case 2:
                     Console.WriteLine("Персонаж не владеет спас бросками");
                     Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
                     Console.ReadKey();
-                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma);
+                    return new Character(name, type, size, danger, armorClass, health, proficiencyBonus, strong, dexterity, physique, intelligence, wisdom, charisma, AdditionalInformation());
                 default:
                     Console.WriteLine("Невозможрое событие");
                     Console.ReadKey();
                     return null;
+            }
+            List<string> AdditionalInformation()
+            {
+                Console.WriteLine("Введите дополнительную информацию о персонаже (если её нет введите пустую строку)");
+                List<string> additionalInformation = new List<string>();
+                string addinput = Console.ReadLine();
+                additionalInformation.Add(addinput);
+                if (additionalInformation[1] == "")
+                {
+                    return additionalInformation;
+                }
+                while (true)
+                {
+                    Console.WriteLine("если хотите дополнить информацию нажмите 1. Если хотите завершить нажмите 2");
+                    int choice = ReadInt(1, 2);
+                    if (choice == 1)
+                    {
+                        Console.WriteLine("Введите дополнительную информацию о персонаже (если её нет введите пустую строку)");
+                        string addinput2 = Console.ReadLine();
+                        additionalInformation.Add(addinput2);
+                    }
+                    else
+                    {
+                        return additionalInformation;
+                    }
+
+                }
             }
         }
 
@@ -541,9 +568,11 @@ namespace dnd_web_app
         public int Charisma { get; private set; }
         public bool CharismaSavingThrow { get; private set; }
 
+        public List<string> AdditionalInformation { get; private set; } = new();
+
         [JsonConstructor]
         public Character(string name, string type, string size, int danger, int armorClass, int health, int proficiencyBonus,
-                int strong, int dexterity, int physique, int intelligence, int wisdom, int charisma,
+                int strong, int dexterity, int physique, int intelligence, int wisdom, int charisma, List<string> additionalInformation,
                 bool strongSavingThrow = false, bool dexteritySavingThrow = false, bool physiqueSavingThrow = false, bool intelligenceSavingThrow = false, bool wisdomSavingThrow = false, bool charismaSavingThrow = false)
 
         {
@@ -567,6 +596,7 @@ namespace dnd_web_app
             IntelligenceSavingThrow = intelligenceSavingThrow;
             WisdomSavingThrow = wisdomSavingThrow;
             CharismaSavingThrow = charismaSavingThrow;
+            AdditionalInformation = additionalInformation;
 
         }
 
