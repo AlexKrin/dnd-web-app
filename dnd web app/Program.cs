@@ -1,8 +1,9 @@
 ﻿using System.Diagnostics;
-using System.Xml.Linq;
+using System.Reflection.Metadata;
+using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using System.Reflection.Metadata;
+using System.Xml.Linq;
 
 namespace dnd_web_app
 {
@@ -43,11 +44,12 @@ namespace dnd_web_app
                 Console.WriteLine("1 - Сюжет");
                 Console.WriteLine("2 - Сохранить");
                 Console.WriteLine("3 - Добавить персонажа");
-                Console.WriteLine("4 - Удалить персонажа");
-                Console.WriteLine("5 - Посмотреть всех персонажей");
-                Console.WriteLine("6 - Выход");
+                Console.WriteLine("4 - Редактировать персонажа");
+                Console.WriteLine("5 - Удалить персонажа");
+                Console.WriteLine("6 - Посмотреть всех персонажей");
+                Console.WriteLine("7 - Выход");
 
-                int userInput = ReadInt(1, 6);
+                int userInput = ReadInt(1, 7);
                 switch (userInput)
                 {
                     case 1:
@@ -61,12 +63,15 @@ namespace dnd_web_app
                         //AddCharacter();
                         break;
                     case 4:
-                        RemoveCharacter();
+                        EditCharacter();
                         break;
                     case 5:
-                        ShowAllCharacter();
+                        RemoveCharacter();
                         break;
                     case 6:
+                        ShowAllCharacter();
+                        break;
+                    case 7:
                         goto end_loop;
                     default:
                         Console.WriteLine("Недопустимое действие. Выберите из предоставленного списка");
@@ -74,6 +79,68 @@ namespace dnd_web_app
                 }
             }
         end_loop:;
+
+            void EditCharacter()
+            {
+                Console.Clear();
+                if (_compaing.Characters.Count == 0)
+                {
+                    Console.WriteLine("Персонажей нет");
+                    Console.WriteLine("Нажмите на любую клавишу чтобы продолжить");
+                    Console.ReadKey();
+                    return;
+                }
+                for (int i = 0; i < _compaing.Characters.Count; i++)
+                {
+                    Console.WriteLine($"Персонаж {i + 1}:");
+                    Console.WriteLine($"Имя: {_compaing.Characters[i].Name}");
+                }
+                Console.WriteLine();
+                Console.Write("Каккого персонажа вы хотите отредактировать?");
+                int characterIndex = ReadInt(1, _compaing.Characters.Count) - 1;
+                Console.Clear();
+                Console.WriteLine($" 1 Имя: {_compaing.Characters[characterIndex].Name}");
+                Console.WriteLine($" 2 Вид: {_compaing.Characters[characterIndex].Type}");
+                Console.WriteLine($" 3 Размер: {_compaing.Characters[characterIndex].Size}");
+                Console.WriteLine($" 4 Опасность: {_compaing.Characters[characterIndex].Danger}");
+                Console.WriteLine($" 5 Класс брони: {_compaing.Characters[characterIndex].ArmorClass}");
+                Console.WriteLine($" 6 Скорость: {_compaing.Characters[characterIndex].Speed}");
+                Console.WriteLine($" 7 Здоровье: {_compaing.Characters[characterIndex].Health}");
+                Console.WriteLine($" 8 Сила: {_compaing.Characters[characterIndex].Strong} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Strong)})");
+                Console.WriteLine($" 9 Ловкость: {_compaing.Characters[characterIndex].Dexterity} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Dexterity)})");
+                Console.WriteLine($" 10 Телосложение: {_compaing.Characters[characterIndex].Physique} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Physique)})");
+                Console.WriteLine($" 11 Интеллект: {_compaing.Characters[characterIndex].Intelligence} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Intelligence)})");
+                Console.WriteLine($" 12 Мудрость: {_compaing.Characters[characterIndex].Wisdom} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Wisdom)})");
+                Console.WriteLine($" 13 Харизма: {_compaing.Characters[characterIndex].Charisma} (Модификатор: {UIBonus(_compaing.Characters[characterIndex], _compaing.Characters[characterIndex].Charisma)})");
+
+                for (int i = 0; i < _compaing.Characters[characterIndex].AdditionalInformation.Count; i++)
+                {
+                    Console.WriteLine($"Дополнительная информация {(i + 1) + 13}: {_compaing.Characters[characterIndex].AdditionalInformation[i]}");
+                }
+
+                Console.Write("Введите номер параметра который хотите изменить");
+                int parameterIndex = ReadInt(1, 14 + _compaing.Characters[characterIndex].AdditionalInformation.Count) - 1;
+
+                if (parameterIndex >= 1 && parameterIndex <= 3)
+                {
+                    Console.WriteLine("Введите новое значение");
+                    string newValue = ReadNotEmptyString();
+                    _compaing.Characters[characterIndex].EditStringParameter(newValue, parameterIndex);
+                }
+                else if (parameterIndex > 3 && parameterIndex <= 13)
+                {
+                    Console.WriteLine("Введите новое значение");
+                    int newValue = ReadInt(1, 20);
+                    _compaing.Characters[characterIndex].EditInrParameter( newValue, parameterIndex);
+                }
+                else if (parameterIndex > 14 && parameterIndex <= 13 + _compaing.Characters[characterIndex].AdditionalInformation.Count)
+                {
+                    Console.WriteLine("Введите новое значение");
+                    string newValue = ReadNotEmptyString();
+                    _compaing.Characters[characterIndex].EditAdditionalParameter(newValue, parameterIndex - 14);
+                }
+
+            }
 
             void DisplayCharacter(Character creature)
             {
@@ -91,17 +158,24 @@ namespace dnd_web_app
                     Console.WriteLine($"Класс брони: {creature.ArmorClass}");
                     Console.WriteLine($"Скорость: {creature.Speed}");
                     Console.WriteLine($"Здоровье: {creature.Health}");
-                    Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.StrongSavingThrow, creature.Strong)})");
-                    Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.DexteritySavingThrow, creature.Dexterity)})");
-                    Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.PhysiqueSavingThrow, creature.Physique)})");
-                    Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.IntelligenceSavingThrow, creature.Intelligence)})");
-                    Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.WisdomSavingThrow, creature.Wisdom)})");
-                    Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.CharismaSavingThrow, creature.Charisma)})");
+                    Console.WriteLine($"Инициатива: {creature.Initiative}");
+                    Console.WriteLine($"Сила: {creature.Strong} (Модификатор: {UIBonus(creature, creature.Strong)})");
+                    Console.WriteLine($"Ловкость: {creature.Dexterity} (Модификатор: {UIBonus(creature, creature.Dexterity)})");
+                    Console.WriteLine($"Телосложение: {creature.Physique} (Модификатор: {UIBonus(creature, creature.Physique)})");
+                    Console.WriteLine($"Интеллект: {creature.Intelligence} (Модификатор: {UIBonus(creature, creature.Intelligence)})");
+                    Console.WriteLine($"Мудрость: {creature.Wisdom} (Модификатор: {UIBonus(creature, creature.Wisdom)})");
+                    Console.WriteLine($"Харизма: {creature.Charisma} (Модификатор: {UIBonus(creature, creature.Charisma)})");
+
+                    //Добавить вывод спасбросков персонажа при их наличии
+                    for (int i = 0; i < creature.AdditionalInformation.Count; i++)
+                    {
+                        Console.WriteLine($"Дополнительная информация {i + 1}: {creature.AdditionalInformation[i]}");
+                    }
                 }
             }
             //Исправить после изменения класса Character. Метод UIBonus должен принимать объект Character и возвращать строковое представление модификатора способности персонажа.
             // Метод UIBonus возвращает строковое представление модификатора способности персонажа с учетом владения соответствующим спасброском.
-            string UIBonus(Character creature, bool savingThrows, int abilityScore)
+            string UIBonus(Character creature, int abilityScore)
             {
                 if (creature.GetModifier(abilityScore) > 0)
                 {
@@ -405,7 +479,7 @@ namespace dnd_web_app
 
             Console.Write("Ведите харизму персонажа: ");
             int charisma = ReadInt(1, 20);
-           
+
             Console.WriteLine("Персонаж владеет спас бросками");
             Console.WriteLine("1 - Да");
             Console.WriteLine("2 - Нет");
@@ -616,8 +690,65 @@ namespace dnd_web_app
             {
                 Health = 0;
             }
+        }
 
+        public void EditAdditionalParameter(string stringParameter, int index)
+        {
+            AdditionalInformation[index] = stringParameter;
+        }
 
+        public void EditStringParameter(string stringParameter, int index)
+        {
+            switch(index)
+            {
+                case 1:
+                    Name = stringParameter;
+                    break;
+                case 2:
+                    Type = stringParameter;
+                    break;
+                case 3:
+                    Size = stringParameter;
+                    break;
+                
+            }
+        }
+
+        public void EditInrParameter(int intParameter, int index)
+        {
+            switch (index)
+            {
+                case 4:
+                    Danger = intParameter;
+                    break;
+                case 5:
+                    ArmorClass = intParameter;
+                    break;
+                case 6:
+                    Speed = intParameter;
+                    break;
+                case 7:
+                    Health = intParameter;
+                    break;
+                case 8:
+                    Strong = intParameter;
+                    break;
+                case 9:
+                    Dexterity = intParameter;
+                    break;
+                case 10:
+                    Physique = intParameter;
+                    break;
+                case 11:
+                    Intelligence = intParameter;
+                    break;
+                case 12:
+                    Wisdom = intParameter;
+                    break;
+                case 13:
+                    Charisma = intParameter;
+                    break;
+            }
         }
     }
 
