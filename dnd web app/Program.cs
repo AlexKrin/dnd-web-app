@@ -19,7 +19,6 @@ namespace dnd_web_app
     {
         private Compaing _compaing = new Compaing();
 
-
         public void Run()
         {
             Console.WriteLine("1 - Продолжить компанию");
@@ -750,29 +749,6 @@ namespace dnd_web_app
                     break;
             }
         }
-    }
-
-    //добавить потом когда все заработает
-    class SkillSet
-    {
-        public bool Athletics { get; private set; }
-        public bool Acrobatics { get; private set; }
-        public bool SleightOfHand { get; private set; }
-        public bool Stealth { get; private set; }
-        public bool Analysis { get; private set; }
-        public bool Story { get; private set; }
-        public bool Magic { get; private set; }
-        public bool Nature { get; private set; }
-        public bool Religion { get; private set; }
-        public bool Perception { get; private set; }
-        public bool Survival { get; private set; }
-        public bool Medicine { get; private set; }
-        public bool Insight { get; private set; }
-        public bool AnimalCare { get; private set; }
-        public bool Performance { get; private set; }
-        public bool Intimidation { get; private set; }
-        public bool Deception { get; private set; }
-        public bool Belief { get; private set; }
     }
 
     class StoryGraf
